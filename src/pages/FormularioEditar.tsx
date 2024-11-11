@@ -30,10 +30,10 @@ export default function Formulario({ navigation }: Props) {
     control,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors,  },
   } = useForm({
     defaultValues: valoresIniciais,
-    resolver: yupResolver(schemaValidacao),
+    resolver: yupResolver(schemaValidacao)
   });
 
   // const onSubmit = (data) => console.log(data)

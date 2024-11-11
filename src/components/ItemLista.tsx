@@ -1,8 +1,16 @@
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Checkbox, Divider, IconButton, List, Menu } from 'react-native-paper';
+import { TarefaDatabase } from '../database/useTarefaDatabase';
 
-export function ItemLista() {
+interface ItemListaProps {
+  item: TarefaDatabase;
+  navigation: any;
+}
+
+export function ItemLista(props: ItemListaProps) {
+  const { item, navigation } = props;
+
   const [checked, setChecked] = useState(false);
   const [visible, setVisible] = useState(false);
 
@@ -13,9 +21,9 @@ export function ItemLista() {
   return (
     <View>
       <List.Item
-        title="First Item"
-        description="Item description"
-        onPress={() => {}}
+        title={item.titulo}
+        description={item.descricao}
+        onPress={() => navigation.push("Detalhes", { id: item.id })}
         left={props => (
           <Checkbox
             status={checked ? 'checked' : 'unchecked'}

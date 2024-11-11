@@ -32,9 +32,9 @@ export default function HomePage({ navigation }: Props) {
         data={tarefas}
         keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => (
-          <ItemLista />
+          <ItemLista item={item} navigation={navigation} />
         )}
-        contentContainerStyle={{ gap: 16 }}
+        contentContainerStyle={styles.listaEstilo}
       />
       <View style={styles.itemVazio}></View>
       <FAB
@@ -58,5 +58,8 @@ const styles = StyleSheet.create({
     margin: 16,
     right: 0,
     bottom: 0,
+  },
+  listaEstilo: {
+    gap: 16,
   }
 });
