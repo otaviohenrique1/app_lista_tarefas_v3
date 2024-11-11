@@ -6,6 +6,7 @@ import Formulario from './Formulario';
 export type NativeStackRootStaticParamList = {
   HomePage: undefined;
   Formulario: undefined;
+  Formulario2: undefined;
 };
 
 const Stack = createNativeStackNavigator<NativeStackRootStaticParamList>();

@@ -5,6 +5,9 @@ import { NativeStackRootStaticParamList } from './routes';
 import Container from '../components/Container';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { useTarefaDatabase } from '../database/useTarefaDatabase';
+import { format } from 'date-fns';
+import { Controller, useForm } from 'react-hook-form';
 
 interface FormTypes {
   titulo: string;
@@ -25,6 +28,18 @@ const schemaValidacao = Yup.object().shape({
 type Props = NativeStackScreenProps<NativeStackRootStaticParamList, "Formulario">;
 
 export default function Formulario({ navigation }: Props) {
+  const tarefaDatabase = useTarefaDatabase();
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    defaultValues: valoresIniciais,
+  });
+
+  // const onSubmit = (data) => console.log(data)
+
   return (
     <Container>
       <Appbar.Header dark style={styles.appbar}>
@@ -32,47 +47,66 @@ export default function Formulario({ navigation }: Props) {
         <Appbar.Content title="Formulario" />
       </Appbar.Header>
       <ScrollView>
-        <Formik
-          initialValues={valoresIniciais}
-          validationSchema={schemaValidacao}
-          onSubmit={values => console.log(values)}
-        >
-          {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-            <View style={{ padding: 20 }}>
-              <View>
+        <View style={{ padding: 20 }}>
+          <View>
+            <Controller
+              control={control}
+              rules={{
+                required: true,
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
-                  onChangeText={handleChange('titulo')}
-                  onBlur={handleBlur('titulo')}
-                  value={values.titulo}
                   label="Titulo"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
                 />
-                {errors.titulo && touched.titulo ? (
-                  <HelperText type="error">
-                    {errors.titulo}
-                  </HelperText>
-                ) : null}
-              </View>
-              <View>
+              )}
+              name="titulo"
+            />
+            {errors.titulo && <HelperText type="error">Campo vazio</HelperText>}
+          </View>
+          <View style={{ marginVertical: 20 }}>
+            <Controller
+              control={control}
+              rules={{
+                required: true,
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
-                  onChangeText={handleChange('descricao')}
-                  onBlur={handleBlur('descricao')}
-                  value={values.descricao}
-                  label="Descrição"
+                  label="Descricao"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
                   multiline
                   numberOfLines={10}
                 />
-                {errors.descricao && touched.descricao ? (
-                  <HelperText type="error">
-                    {errors.descricao}
-                  </HelperText>
-                ) : null}
-              </View>
-              <Button onPress={() => handleSubmit()}>
-                Salvar
-              </Button>
-            </View>
-          )}
-        </Formik>
+              )}
+              name="descricao"
+            />
+            {errors.descricao && <HelperText type="error">Campo vazio</HelperText>}
+          </View>
+          <Button
+            onPress={handleSubmit(async (values) => {
+                try {
+                  const data = format(new Date(), "MM/dd/yyyy HH:mm");
+                  const resposta = await tarefaDatabase.criar({
+                    titulo: values.titulo,
+                    descricao: values.descricao,
+                    data_criacao: data,
+                  });
+                  console.log(resposta.insertedRowId);
+                  reset();
+                  navigation.goBack();
+                } catch (error) {
+                  console.error(error);
+                }
+              })}
+            mode="contained"
+            style={{ marginBottom: 10 }}
+          >Salvar</Button>
+          <Button onPress={() => reset()} mode="outlined">Limpar</Button>
+        </View>
       </ScrollView>
     </Container>
   );

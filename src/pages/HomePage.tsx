@@ -1,38 +1,42 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { FlatList, ScrollView, StyleSheet, View } from 'react-native';
 import { Appbar, FAB } from 'react-native-paper';
 import { NativeStackRootStaticParamList } from './routes';
 import { ItemLista } from '../components/ItemLista';
 import Container from '../components/Container';
+import { TarefaDatabase, useTarefaDatabase } from '../database/useTarefaDatabase';
+import { useEffect, useState } from 'react';
 
 type Props = NativeStackScreenProps<NativeStackRootStaticParamList, "HomePage">;
 
 export default function HomePage({ navigation }: Props) {
+  const [tarefas, setTarefas] = useState<TarefaDatabase[]>([]);
+  const tarefaDatabase = useTarefaDatabase();
+
+  async function buscaTodos() {
+    const resposta = await tarefaDatabase.listarTodos();
+    setTarefas(resposta);
+  }
+
+  useEffect(() => {
+    buscaTodos();
+  }, [tarefas])
+
   return (
     <Container>
       <Appbar.Header dark style={styles.appbar}>
         <Appbar.Content title="HomePage" />
         {/* <Appbar.Action icon="plus" onPress={() => navigation.push("Formulario")} /> */}
       </Appbar.Header>
-      <ScrollView style={styles.itemVazio}>
-        <ItemLista />
-        <ItemLista />
-        <ItemLista />
-        <ItemLista />
-        <ItemLista />
-        <ItemLista />
-        <ItemLista />
-        <ItemLista />
-        <ItemLista />
-        <ItemLista />
-        <ItemLista />
-        <ItemLista />
-        <ItemLista />
-        <ItemLista />
-        <ItemLista />
-        <ItemLista />
-        <View style={styles.itemVazio}></View>
-      </ScrollView>
+      <FlatList
+        data={tarefas}
+        keyExtractor={(item) => String(item.id)}
+        renderItem={({ item }) => (
+          <ItemLista />
+        )}
+        contentContainerStyle={{ gap: 16 }}
+      />
+      <View style={styles.itemVazio}></View>
       <FAB
         icon="plus"
         style={styles.fab}
