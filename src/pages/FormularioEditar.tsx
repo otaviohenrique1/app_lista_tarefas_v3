@@ -1,28 +1,52 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Appbar, Button } from 'react-native-paper';
+import { Appbar, Button, Text } from 'react-native-paper';
 import { NativeStackRootStaticParamList } from './routes';
 import Container from '../components/Container';
-import { useTarefaDatabase } from '../database/useTarefaDatabase';
-import { format } from 'date-fns';
+import { TarefaDatabase, useTarefaDatabase } from '../database/useTarefaDatabase';
 import { useForm } from 'react-hook-form';
 import { CampoTexto } from '../components/CampoTexto';
 import { yupResolver } from "@hookform/resolvers/yup"
 import { schemaValidacao, valoresIniciais } from '../utils/constantes';
+import { useEffect, useState } from 'react';
+
+const dadosIniciais: TarefaDatabase = {
+  id: 0,
+  titulo: '',
+  descricao: '',
+  data_criacao: ''
+};
 
 type Props = NativeStackScreenProps<NativeStackRootStaticParamList, "FormularioEditar">;
 
-export default function FormularioEditar({ navigation }: Props) {
+export default function FormularioEditar({ navigation, route }: Props) {
+  const [tarefa, setTarefa] = useState<TarefaDatabase>(dadosIniciais);
   const tarefaDatabase = useTarefaDatabase();
+
   const {
     control,
     handleSubmit,
     reset,
-    formState: { errors,  },
+    formState: { errors },
   } = useForm({
     defaultValues: valoresIniciais,
+    values: {
+      titulo: tarefa.titulo,
+      descricao: tarefa.descricao
+    },
     resolver: yupResolver(schemaValidacao)
   });
+  
+  const { id } = route.params;
+
+  const buscaUmaTarefa = async () => {
+    const data = await tarefaDatabase.listarUm(id);
+    setTarefa((data !== null) ? data : dadosIniciais);
+  };
+
+  useEffect(() => {
+    buscaUmaTarefa();
+  }, [tarefa])
 
   return (
     <Container>
@@ -33,6 +57,7 @@ export default function FormularioEditar({ navigation }: Props) {
       <ScrollView>
         <View style={{ padding: 20 }}>
           <View>
+            <Text>{tarefa.titulo}</Text>
             <CampoTexto
               control={control}
               label="Titulo"
@@ -41,6 +66,7 @@ export default function FormularioEditar({ navigation }: Props) {
             />
           </View>
           <View style={{ marginVertical: 20 }}>
+            <Text>{tarefa.descricao}</Text>
             <CampoTexto
               control={control}
               label="Descrição"
@@ -51,14 +77,12 @@ export default function FormularioEditar({ navigation }: Props) {
           <Button
             onPress={handleSubmit(async (values) => {
                 try {
-                  const data = format(new Date(), "MM/dd/yyyy HH:mm");
-                  const resposta = await tarefaDatabase.criar({
+                  await tarefaDatabase.atualizar({
+                    id: id,
                     titulo: values.titulo,
                     descricao: values.descricao,
-                    data_criacao: data,
+                    data_criacao: tarefa.data_criacao,
                   });
-                  console.log(resposta.insertedRowId);
-                  reset();
                   navigation.goBack();
                 } catch (error) {
                   console.error(error);

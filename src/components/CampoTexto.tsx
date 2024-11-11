@@ -30,6 +30,7 @@ export function CampoTexto(props: CampoTextoProps) {
             value={value}
             multiline={multiline}
             numberOfLines={numberOfLines}
+            editable
           />
         )}
         name={name}

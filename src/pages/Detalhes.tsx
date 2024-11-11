@@ -26,7 +26,7 @@ export default function Detalhes({ navigation, route }: Props) {
 
   useEffect(() => {
     buscaUmaTarefa();
-  }, [])
+  }, [tarefa])
 
   const { id } = route.params;
 
@@ -50,7 +50,7 @@ export default function Detalhes({ navigation, route }: Props) {
         <Button
           mode="contained"
           style={styles.editar}
-          onPress={() => {}}
+          onPress={() => navigation.push("FormularioEditar", { id: id })}
         >Editar</Button>
         <Button
           mode="outlined"

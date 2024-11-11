@@ -41,7 +41,10 @@ export function ItemLista(props: ItemListaProps) {
             anchorPosition="bottom"
             {...props}
           >
-            <Menu.Item onPress={() => { }} title="Editar" />
+            <Menu.Item
+              onPress={() => navigation.push("FormularioEditar", { id: item.id })}
+              title="Editar"
+            />
             <Menu.Item onPress={() => { }} title="Remover" />
           </Menu>
         )}
