@@ -1,30 +1,18 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Appbar, Button, HelperText, TextInput } from 'react-native-paper';
+import { Appbar, Button } from 'react-native-paper';
 import { NativeStackRootStaticParamList } from './routes';
 import Container from '../components/Container';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
 import { useTarefaDatabase } from '../database/useTarefaDatabase';
 import { format } from 'date-fns';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { CampoTexto } from '../components/CampoTexto';
 import { yupResolver } from "@hookform/resolvers/yup"
-import { FormTypes } from '../types';
+import { schemaValidacao, valoresIniciais } from '../utils/constantes';
 
-const valoresIniciais: FormTypes = {
-  titulo: '',
-  descricao: ''
-};
+type Props = NativeStackScreenProps<NativeStackRootStaticParamList, "FormularioEditar">;
 
-const schemaValidacao = Yup.object().shape({
-  titulo: Yup.string().required('Campo vazio'),
-  descricao: Yup.string().required('Campo vazio'),
-});
-
-type Props = NativeStackScreenProps<NativeStackRootStaticParamList, "Formulario">;
-
-export default function Formulario({ navigation }: Props) {
+export default function FormularioEditar({ navigation }: Props) {
   const tarefaDatabase = useTarefaDatabase();
   const {
     control,
@@ -36,8 +24,6 @@ export default function Formulario({ navigation }: Props) {
     resolver: yupResolver(schemaValidacao)
   });
 
-  // const onSubmit = (data) => console.log(data)
-
   return (
     <Container>
       <Appbar.Header dark style={styles.appbar}>
@@ -46,24 +32,6 @@ export default function Formulario({ navigation }: Props) {
       </Appbar.Header>
       <ScrollView>
         <View style={{ padding: 20 }}>
-          {/* <View>
-            <Controller
-              control={control}
-              rules={{
-                required: true,
-              }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  label="Titulo"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                />
-              )}
-              name="titulo"
-            />
-            {errors.titulo && <HelperText type="error">Campo vazio</HelperText>}
-          </View> */}
           <View>
             <CampoTexto
               control={control}
@@ -79,24 +47,6 @@ export default function Formulario({ navigation }: Props) {
               name="descricao"
               errors={errors.descricao}
             />
-            {/* <Controller
-              control={control}
-              rules={{
-                required: true,
-              }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  label="Descricao"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  multiline
-                  numberOfLines={10}
-                />
-              )}
-              name="descricao"
-            />
-            {errors.descricao && <HelperText type="error">Campo vazio</HelperText>} */}
           </View>
           <Button
             onPress={handleSubmit(async (values) => {

@@ -10,17 +10,8 @@ import { format } from 'date-fns';
 import { Controller, useForm } from 'react-hook-form';
 import { CampoTexto } from '../components/CampoTexto';
 import { yupResolver } from "@hookform/resolvers/yup"
-import { FormTypes } from '../types';
-
-const valoresIniciais: FormTypes = {
-  titulo: '',
-  descricao: ''
-};
-
-const schemaValidacao = Yup.object().shape({
-  titulo: Yup.string().required('Campo vazio'),
-  descricao: Yup.string().required('Campo vazio'),
-});
+import { FormTypes } from '../types/types';
+import { schemaValidacao, valoresIniciais } from '../utils/constantes';
 
 type Props = NativeStackScreenProps<NativeStackRootStaticParamList, "Formulario">;
 

@@ -2,7 +2,7 @@ import React from "react";
 import { Control, Controller, FieldError } from "react-hook-form";
 import { HelperText, TextInput } from "react-native-paper";
 import { TextInputLabelProp } from "react-native-paper/lib/typescript/components/TextInput/types";
-import { FormTypes } from "../types";
+import { FormTypes } from "../types/types";
 
 interface CampoTextoProps {
   control: Control<FormTypes, any>;
