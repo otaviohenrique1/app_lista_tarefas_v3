@@ -5,6 +5,7 @@ export type TarefaDatabase = {
   titulo: string;
   descricao: string;
   data_criacao: string;
+  ativo: boolean;
 }
 
 export function useTarefaDatabase() {
@@ -12,14 +13,15 @@ export function useTarefaDatabase() {
 
   async function criar(data: Omit<TarefaDatabase, "id">) {
     const statement = await database.prepareAsync(
-      "INSERT INTO tarefas (titulo, descricao, data_criacao) VALUES ($titulo, $descricao, $data_criacao)"
+      "INSERT INTO tarefas (titulo, descricao, data_criacao, ativo) VALUES ($titulo, $descricao, $data_criacao, $ativo)"
     );
 
     try {
       const resultado = await statement.executeAsync({
         $titulo: data.titulo,
         $descricao: data.descricao,
-        $data_criacao: data.data_criacao
+        $data_criacao: data.data_criacao,
+        $ativo: data.ativo,
       });
       const insertedRowId = resultado.lastInsertRowId.toLocaleString();      
       return { insertedRowId };
@@ -32,7 +34,7 @@ export function useTarefaDatabase() {
 
   async function atualizar(data: TarefaDatabase) {
     const statement = await database.prepareAsync(
-      "UPDATE tarefas SET titulo = $titulo, descricao = $descricao, data_criacao = $data_criacao WHERE id = $id"
+      "UPDATE tarefas SET titulo = $titulo, descricao = $descricao, data_criacao = $data_criacao, $ativo = ativo WHERE id = $id"
     );
 
     try {
@@ -40,7 +42,8 @@ export function useTarefaDatabase() {
         $id: data.id,
         $titulo: data.titulo,
         $descricao: data.descricao,
-        $data_criacao: data.data_criacao
+        $data_criacao: data.data_criacao,
+        $ativo: data.ativo,
       });
     } catch (error) {
       throw error;

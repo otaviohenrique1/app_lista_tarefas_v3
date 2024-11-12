@@ -14,7 +14,8 @@ const dadosIniciais: TarefaDatabase = {
   id: 0,
   titulo: '',
   descricao: '',
-  data_criacao: ''
+  data_criacao: '',
+  ativo: false,
 };
 
 type Props = NativeStackScreenProps<NativeStackRootStaticParamList, "FormularioEditar">;
@@ -82,6 +83,7 @@ export default function FormularioEditar({ navigation, route }: Props) {
                     titulo: values.titulo,
                     descricao: values.descricao,
                     data_criacao: tarefa.data_criacao,
+                    ativo: tarefa.ativo,
                   });
                   navigation.goBack();
                 } catch (error) {

@@ -10,7 +10,8 @@ const dadosIniciais: TarefaDatabase = {
   id: 0,
   titulo: '',
   descricao: '',
-  data_criacao: ''
+  data_criacao: '',
+  ativo: false,
 };
 
 type Props = NativeStackScreenProps<NativeStackRootStaticParamList, "Detalhes">;

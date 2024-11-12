@@ -97,6 +97,7 @@ export default function Formulario({ navigation }: Props) {
                     titulo: values.titulo,
                     descricao: values.descricao,
                     data_criacao: data,
+                    ativo: false,
                   });
                   console.log(resposta.insertedRowId);
                   reset();

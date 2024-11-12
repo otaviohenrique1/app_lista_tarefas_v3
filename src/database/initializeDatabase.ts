@@ -6,7 +6,9 @@ export async function initializeDatabase(database: SQLiteDatabase) {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       titulo TEXT NOT NULL,
       descricao TEXT NOT NULL,
-      data_criacao TEXT NOT NULL
+      data_criacao TEXT NOT NULL,
+      ativo BOOLEAN NOT NULL
     );
   `);
+  // DROP TABLE tarefas;
 }
