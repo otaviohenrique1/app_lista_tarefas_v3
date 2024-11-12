@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Modal, Portal,Checkbox, Divider, IconButton, List, Menu, Text, Button } from 'react-native-paper';
+import { Modal, Portal, Checkbox, Divider, IconButton, List, Menu, Text, Button } from 'react-native-paper';
 import { TarefaDatabase, useTarefaDatabase } from '../database/useTarefaDatabase';
 import { ModalRemover } from './ModalRemover';
 
@@ -26,6 +26,15 @@ export function ItemLista(props: ItemListaProps) {
   };
   const fechaModal = () => setExibeModal(false);
 
+  useEffect(() => {
+    // setChecked(item.ativo as boolean);
+  }, [])
+
+  const marcaCheckbox = async () => {
+    setChecked(!checked);
+    await tarefaDatabase.atualizarAtivo(item.id, !checked);
+  };
+
   return (
     <View>
       <List.Item
@@ -37,9 +46,7 @@ export function ItemLista(props: ItemListaProps) {
         left={props => (
           <Checkbox
             status={checked ? 'checked' : 'unchecked'}
-            onPress={() => {
-              setChecked(!checked);
-            }}
+            onPress={marcaCheckbox}
             {...props}
           />
         )}
@@ -62,12 +69,26 @@ export function ItemLista(props: ItemListaProps) {
       <ModalRemover
         visible={exibeModal}
         onDismiss={fechaModal}
-        onPressSim={() => {
-          tarefaDatabase.remover(item.id);
+        onPressSim={async () => {
+          await tarefaDatabase.remover(item.id);
           fechaModal();
         }}
         onPressNao={fechaModal}
       />
+      {
+        (checked) ? (
+          <Text
+            variant="bodyLarge"
+            style={{
+              position: 'absolute',
+              // margin: 16,
+              right: 0,
+              top: 10,
+              transform: [{ rotate: '45deg' }],
+            }}
+          >Feito</Text>
+        ) : null
+      }
       <Divider style={styles.divider} />
     </View>
   );

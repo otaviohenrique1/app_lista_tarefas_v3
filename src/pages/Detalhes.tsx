@@ -53,10 +53,6 @@ export default function Detalhes({ navigation, route }: Props) {
           style={styles.editar}
           onPress={() => navigation.push("FormularioEditar", { id: id })}
         >Editar</Button>
-        <Button
-          mode="outlined"
-          onPress={() => {}}
-        >Remover</Button>
       </View>
     </Container>
   );

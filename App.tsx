@@ -5,7 +5,7 @@ import { initializeDatabase } from './src/database/initializeDatabase';
 
 export default function App() {
   return (
-    <SQLiteProvider databaseName="database.db" onInit={initializeDatabase}>
+    <SQLiteProvider databaseName="database.db" onInit={initializeDatabase} options={{useNewConnection: true}} >
       <PaperProvider>
         <AppRoutes />
       </PaperProvider>

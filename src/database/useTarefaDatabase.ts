@@ -5,7 +5,7 @@ export type TarefaDatabase = {
   titulo: string;
   descricao: string;
   data_criacao: string;
-  ativo: boolean;
+  ativo: boolean | number;
 }
 
 export function useTarefaDatabase() {
@@ -52,6 +52,23 @@ export function useTarefaDatabase() {
     }
   }
 
+  async function atualizarAtivo(id: number, ativo: boolean) {
+    const statement = await database.prepareAsync(
+      "UPDATE tarefas SET ativo = $ativo WHERE id = $id"
+    );
+
+    try {
+      await statement.executeAsync({
+        $id: id,
+        $ativo: ativo,
+      });
+    } catch (error) {
+      throw error;
+    } finally {
+      await statement.finalizeAsync();
+    }
+  }
+
   async function remover(id: number) {
     try {
       await database.execAsync("DELETE FROM tarefas WHERE id = " + id);
@@ -80,11 +97,19 @@ export function useTarefaDatabase() {
 
       const response = await database.getAllAsync<TarefaDatabase>(query);
 
-      return response;
+      return response.map((item) => {
+        return {
+          id: item.id,
+          titulo: item.titulo,
+          descricao: item.descricao,
+          data_criacao: item.data_criacao,
+          ativo: (item.ativo === 0) ? false : true,
+        };
+      });
     } catch (error) {
       throw error;
     }
   }
 
-  return { criar, atualizar, remover, listarUm, listarTodos };
+  return { criar, atualizar, atualizarAtivo, remover, listarUm, listarTodos };
 }

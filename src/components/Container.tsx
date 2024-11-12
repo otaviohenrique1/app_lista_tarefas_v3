@@ -1,8 +1,6 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
-import { ReactNode, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { Appbar, Checkbox, Divider, IconButton, List, Menu } from 'react-native-paper';
+import { ReactNode } from 'react';
+import { StyleSheet, View } from 'react-native';
 
 interface ContainerProps {
   children: ReactNode;
