@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Checkbox, Divider, IconButton, List, Menu } from 'react-native-paper';
-import { TarefaDatabase } from '../database/useTarefaDatabase';
+import { Modal, Portal,Checkbox, Divider, IconButton, List, Menu, Text, Button } from 'react-native-paper';
+import { TarefaDatabase, useTarefaDatabase } from '../database/useTarefaDatabase';
+import { ModalRemover } from './ModalRemover';
 
 interface ItemListaProps {
   item: TarefaDatabase;
@@ -12,17 +13,26 @@ export function ItemLista(props: ItemListaProps) {
   const { item, navigation } = props;
 
   const [checked, setChecked] = useState(false);
-  const [visible, setVisible] = useState(false);
+  const [exibeMenu, setExibeMenu] = useState(false);
+  const [exibeModal, setExibeModal] = useState(false);
+  const tarefaDatabase = useTarefaDatabase();
 
-  const openMenu = () => setVisible(true);
+  const abreMenu = () => setExibeMenu(true);
+  const fechaMenu = () => setExibeMenu(false);
 
-  const closeMenu = () => setVisible(false);
+  const abreModal = () => {
+    setExibeModal(true);
+    setExibeMenu(false);
+  };
+  const fechaModal = () => setExibeModal(false);
 
   return (
     <View>
       <List.Item
         title={item.titulo}
         description={item.descricao}
+        titleStyle={{ textDecorationLine: (checked) ? "line-through" : "none" }}
+        descriptionStyle={{ textDecorationLine: (checked) ? "line-through" : "none" }}
         onPress={() => navigation.push("Detalhes", { id: item.id })}
         left={props => (
           <Checkbox
@@ -35,9 +45,9 @@ export function ItemLista(props: ItemListaProps) {
         )}
         right={props => (
           <Menu
-            visible={visible}
-            onDismiss={closeMenu}
-            anchor={<IconButton icon="dots-vertical" onPress={openMenu} />}
+            visible={exibeMenu}
+            onDismiss={fechaMenu}
+            anchor={<IconButton icon="dots-vertical" onPress={abreMenu} />}
             anchorPosition="bottom"
             {...props}
           >
@@ -45,9 +55,18 @@ export function ItemLista(props: ItemListaProps) {
               onPress={() => navigation.push("FormularioEditar", { id: item.id })}
               title="Editar"
             />
-            <Menu.Item onPress={() => { }} title="Remover" />
+            <Menu.Item onPress={abreModal} title="Remover" />
           </Menu>
         )}
+      />
+      <ModalRemover
+        visible={exibeModal}
+        onDismiss={fechaModal}
+        onPressSim={() => {
+          tarefaDatabase.remover(item.id);
+          fechaModal();
+        }}
+        onPressNao={fechaModal}
       />
       <Divider style={styles.divider} />
     </View>
